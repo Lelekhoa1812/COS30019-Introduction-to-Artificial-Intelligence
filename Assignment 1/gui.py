@@ -2,35 +2,36 @@ import tkinter as tk
 from searchmain import Node
 
 class GUI(tk.Tk):
-    def __init__(self, grid, start, goal, path):
+    # Draw the dmap display
+    def __init__(self, grid_instance, grid, start, goal, path):
         super().__init__()
-        self.title("Grid Display")
-        window_width = 330 #10 * self.grid.cols  
-        window_height = 330 #10 * self.grid.rows  
-        self.geometry(f"{window_width}x{window_height}") # Size of the GUI display window is designed to fit the map    
+        self.title("GUI Display")
+        window_width = 30 * grid_instance.rows # Cell size * num_of_rows  
+        window_height = 30 * grid_instance.cols  # Cell size * num_of_cols
+        self.geometry(f"{window_width}x{window_height}") # Size of the GUI display window is designated to fit the map    
         self.grid = grid
         self.start = start
-        self.goal = goal
+        self.goal = [goal] # List goal nodes
         self.path = [Node(x, y) for x, y in path]
         self.cell_size = 30
         self.canvas = tk.Canvas(self, width=window_width, height=window_height)
         self.canvas.pack()
         self.draw_grid()
-
+ 
     def draw_grid(self):
         for i in range(self.grid.rows):
             for j in range(self.grid.cols):
-                x0, y0 = i * self.cell_size, j * self.cell_size  # Swap x and y
+                x0, y0 = i * self.cell_size, j * self.cell_size  
                 x1, y1 = x0 + self.cell_size, y0 + self.cell_size
-                if (i, j) == self.goal:
-                    self.canvas.create_rectangle(x0, y0, x1, y1, fill="lime green")
-                elif (i, j) == self.start:
+                if (i, j) in self.goal: # Goal cell(s) as lime color
+                    self.canvas.create_rectangle(x0, y0, x1, y1, fill="lime")
+                elif (i, j) == self.start: # Match starting cell as red color
                     self.canvas.create_rectangle(x0, y0, x1, y1, fill="red")
-                elif (i, j) in self.path:
+                elif any(node.x == i and node.y == j for node in self.path): # All 'path-to-goal' cells as yellow color
                     self.canvas.create_rectangle(x0, y0, x1, y1, fill="yellow")
-                elif self.grid.grid[i][j] == 1:
+                elif self.grid.grid[i][j] == 1: # Wall cell(s) as gray color
                     self.canvas.create_rectangle(x0, y0, x1, y1, fill="dark gray")
-                else:
+                else: # Empty cell(s) as white color
                     self.canvas.create_rectangle(x0, y0, x1, y1, fill="white")
 
 
