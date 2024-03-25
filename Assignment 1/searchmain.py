@@ -27,11 +27,14 @@ class Node:
 
     # If sum of x and y should be prioritized
     def __lt__(self, other):
-        return self.x + self.y < other.x + other.y
+        if isinstance(other, Node): # Check whehter  'other' is an instance of class 'Node
+            return self.x + self.y < other.x + other.y
+        return False
+    
 
     # If value of x and y should be prioritized
     def __eq__(self, other):
-        if isinstance(other, Node):
+        if isinstance(other, Node): # Check whehter  'other' is an instance of class 'Node
             return self.x == other.x and self.y == other.y
         return False
     
@@ -273,8 +276,11 @@ if __name__ == "__main__":
             print(f"{filename} {method}")
             print(f"No goal is reachable; {total_nodes}")
 
+    # Create an instance containing only rows and column for Grid class, used to scale the GUI display window
+    grid_instance = Grid(rows, cols) 
+
     # Create GUI window if path is not None
-    # if path:
-        #from gui import GUI
-        #app = GUI(grid, start, goal[0], [tuple((node.x, node.y)) for node in path])
-        #app.mainloop()
+    if path:
+        from gui import GUI
+        app = GUI(grid_instance, grid, start, goal[0], [tuple((node.x, node.y)) for node in path])
+        app.mainloop()
