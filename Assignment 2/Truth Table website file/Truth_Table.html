@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Truth Table Generator</title>
+  <script type="text/javascript" src="ast.js"></script>
+  <script type="text/javascript" src="core.js"></script>
+  <script type="text/javascript" src="parser.js"></script>
+  <script type="text/javascript" src="renderer.js"></script>
+  <script type="text/javascript" src="scanner.js"></script>
+  <script type="text/javascript" src="truthtable.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="content">
+    <h1 class="title">Truth Table Generator</h1>
+    <p class="overview">Using these propositional operators:</p>
+    <p class="overview">1. Negation(not) '¬','~','!'</p>
+    <p class="overview">2. Conjunction(and) '∧','&' </p>
+    <p class="overview">3. Disjunction(or) '∨','||'</p>
+    <p class="overview">4. Implication '→','->','=>'</p>
+    <p class="overview">5. Reduction '←','<-','<='</p>
+    <p class="overview">5. Biconditional(equal) '↔','<->','<=>'</p>
+    <p>
+      <input id="expressionInput" type="text" oninput="go();" placeholder="Enter expression..."/>
+    </p>
+    <input type="file" id="fileInput" accept=".txt">
+    <button onclick="handleFile()">Generate Table</button>
+    <div id="table-target"></div>
+  </div>
+  <script>
+    function handleFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const fileContent = event.target.result;
+        const equation = parseFileContent(fileContent);
+        if (equation) {
+          const parseResult = parse(equation);
+          prettyPrintTruthTable(parseResult);
+          // Call the go() function to handle the uploaded equation
+          go();
+        } else {
+          alert("Error: Invalid file format. Please make sure the file contains the equation between 'TELL' and 'ASK' tags.");
+        }
+      }
+
+      if (file) {
+        reader.readAsText(file);
+      }
+    }
+    function parseFileContent(content) {
+      const startTag = "TELL";
+      const endTag = "ASK";
+      const startIndex = content.indexOf(startTag);
+      const endIndex = content.indexOf(endTag);
+      if (startIndex !== -1 && endIndex !== -1) {
+        const equationStartIndex = startIndex + startTag.length;
+        const equationEndIndex = endIndex;
+        return content.substring(equationStartIndex, equationEndIndex).trim();
+      } else {
+        return null;
+      }
+    }
+  </script>
+</body>
+</html>
