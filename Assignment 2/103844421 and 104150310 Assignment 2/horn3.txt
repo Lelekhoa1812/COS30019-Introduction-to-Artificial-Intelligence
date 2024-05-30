@@ -1,0 +1,4 @@
+TELL
+i=> k; k => j; f^g => h; i&j&k=>d; j^k => c; a; b; i;
+ASK
+d
